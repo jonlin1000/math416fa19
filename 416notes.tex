@@ -1,0 +1,132 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}{Corollary}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+\newtheorem{question}{Question}
+
+\title{MATH416 Notes}
+\author{Jonathan Lin}
+\date{\today}
+
+\begin{document}
+This document is a set of notes to the course MATH416 and also is my attempt at understanding the material better.
+
+\section{First Week: 8/26--8/30}
+The course summary:
+\begin{enumerate}
+	\item PCA (Principal Component Analysis), Dimension Reduction, Laplacian, Frames
+	\item Fourier Theory
+	\item Wavelets
+\end{enumerate}
+Czaja says these three topics are unified by ``representation''. More specifically that a common theme in this course will be considering the best way to represent a concept, using possibly a countable or finite set of objects.
+
+In the real world, we can only measure \textit{countable} numbers. For some $d$-dimensional vector space we can associate a list $[v_1, \dotsc, v_d]$ which generates that vector space. It is even nicer if this basis is orthonormal!
+
+\begin{question}
+	Can we use finite or countable information to resolve an uncountable set of data?
+\end{question}
+
+Consider a vector space $(V, +, \cdot )$. In essence, a vector space has $3$ different components. In abstract algebra introduced are several examples of interesting ways of adding vectors and multiplying by scalars. However, in this course we are more interested in the dimension of the vector space. In $\mathbb{R}^d$ we have a standard basis $(e_1, \dots, e_n)$ where every vector in this vector space can be represented as a unique combination of this finite set of vectors! This is partially related to our question, because everything that can be modeled can be represented using a \textbf{finite} list of objects.
+
+Another example is with $\mathbb{C}$. We can define the complex numbers as a set of ordered pairs with a defined addition and multiplication (see Spivak, chapter 24?) So we can think of $\mathbb{C}$ as a $2$-dimensiional analog of $\mathbb{R}$ with multiplication. Of importance in this course is also how we can represent complex numbers as trigonometric components. 
+
+Since vectors can only be approximated in applications, it is important to know how off we are in our approximations. This requires a notion of \textbf{distance}. In a vector space, for instance, we'd like a way to measure distance between two vectors $v$ and $w$. The canonical way to do this is with some sort of norm. However, there are many ways of defining distance. Of most interest are the $p$-norms, where 
+\[ \|v\|_p = \left(|v_1|^p + \cdots + |v_d|^p\right) \]
+and $1 \leq p < \infty$.
+
+Integral to the concept of distance in a vector space is definitely the concept of a \textbf{norm}.
+
+\begin{defn}
+A norm is a function $\|~\|\colon V \to \mathbb{R}_{\geq 0}$ satisfying the following properties:
+\begin{itemize}
+	\item $\|x + y\| \leq \|x\| + \|y\|$ for all vectors $x$ and $y$ in $V$,
+	\item $\|x\| = 0$ if and only if $x = 0$,
+	\item $\|c \cdot x\| = |c|\|x\|$ for all scalars $c$.
+\end{itemize}
+\end{defn}
+
+To formalize the remarks before the definition:
+\begin{prop}
+	$\|v\|_p$ is a norm.
+\end{prop}
+
+This follows from the so called \textit{Minkowski inequality}.
+
+It turns out that all these norms are equivalent topologically, and in some applications using some norm is better than using the standard euclidean norm, or maybe another norm.
+
+\section{Week 2 (9/02 -- 9/06): Orthonormal Bases, their limitations, a generalization}
+
+We would like to investigate some kind of generalization of the orthonormal basis, for possibly more practical applications. Nice properties of the orthonormal bases are the uniqueness of representation and the ease in which we might obtain these representations. However, in real applications there are complications, like corruption of coefficients, lost coefficients, where a small change could mean un-readable data. This is unacceptable, so that the orthonormal basis may not be the best way to encode information.
+
+So we seek a generalization of the orthonormal basis: one in which the coefficients might be easy to find but with the loss of uniqueness. First some review.
+
+\begin{defn}
+An inner product is a function $\langle \cdot , \cdot \rangle \colon V \times V \to \mathbb{F}$ in a vector space $V$ with the following properties:
+\begin{itemize}
+	\item $\langle x, y \rangle = \overline{\langle y, x \rangle}$,
+	\item $\langle ax + by, z \rangle = a\langle x, z \rangle + b\langle y, z\rangle$
+	\item $\langle x, x \rangle \geq 0$ with equality if and only if $x = 0$.
+\end{itemize}
+\end{defn}
+
+Given an inner product space we can always define a norm: take $\|x\| = \sqrt{\langle x, x\rangle}$. To do this we need the \textbf{Cauchy-Schwarz Theorem}:
+
+\begin{thm}
+For all vectors $u$ and $v$ in $V$ we have 
+\[|\langle u, v \rangle | \leq \|u\|\|v\|.\]
+\end{thm}
+
+We define perpendicularity as usual: $x \perp y$ if and only if $\langle x, y \rangle = 0$.
+
+With an orthonormal basis a vector space practically becomes $\mathbb{R}^n$.
+
+Now assume that $V$ has an orthonormal basis $e_1, \dots, e_d$. Then if $x = \sum c_ie_i$ we have that $\|x\|^2 = \sum |c_i|^2$. We can also deduce that $c_i = \langle x, e_i\rangle$ so we deduce that 
+\[\|x\|^2 = \sum_{i = 1}^d|\langle x, e_i\rangle|^2.\]
+
+This formula, known as Parseval/Plancherel's inequality motivates us to generalize the orthonormal basis. What if we don't really want equality in this situation?
+
+\begin{defn}
+A \textbf{frame} for $V$ is a collection $\{f_i\}$ such that there exist positive constants $A$ and $B$ such that 
+\[A\|x\|^2 \leq \sum_{i = 1}^D|\langle x, f_i\rangle|^2 \leq B\|x\|^2\]
+for all $x \in V$.
+\end{defn}
+
+Here are some examples of frames. Any orthonormal basis for $V$ is by definition a frame with $A = B = 1$ by Parseval equality. However, we would like that our new definition is more general than the last one. In particular, can we have a frame with a set of elements that do not have a basis? If our list is just two copies of an orthonormal basis, then we have that our list is a frame with frame constants $A = B = 2$.
+
+Another example that illustrates that $A$ and $B$ can be different: let $f_n$ be defined as $f_1 = e_1,\dotsc, f_d = e_d, f_{d + 1} = e_1$. Then 
+\[\sum_{i = 1}^{d + 1}|\langle v, f_i\rangle|^2 = \sum_{i = 1}^d|\langle v, f_i \rangle|^2 + |\langle v, e_1\rangle|^2 \leq \|v\|^2 + \|v\|^2\|e_1\|^2 = 2\|v\|^2\]
+by the Cauchy-Schwarz inequality. Furthermore we have trivially that 
+\[\|v\|^2 \leq \|v\|^2 + |\langle v, e_1\rangle|^2.\]
+
+In the last two examples we've avoided the uniqueness of representation in terms of frame vectors.
+
+\begin{prop}
+If $V$ is finite dimensional, then a collection of less than $\dim{V}$ vectors cannot be a frame.
+\end{prop}
+\begin{proof}
+If any collection of vectors do not span $V$ their orthogonal complement will be non-empty and contain a vector $x$, and we have that the ``frame expression''
+\[\sum_{i = 1}^D|\langle x, f_i\rangle|^2 = 0.\]
+\end{proof}
+
+The upper and lower inequalities serve roles which are a little bit different in the expression.
+For example, if $\{f_i\}$ is a finite collection of vectors, then we can get that any collection of non-zero vectors satisfies the upper inequality (by Cauchy-Schwarz). A reasonable interpretation of $B$ is that it is the ``size'' of the given frame. Any set of vectors for which the upper inequality holds is called a \textbf{Bessel System}.
+
+Differently, the lower inequality measures the extent to which a vector can be orthogonal to the other vectors in the frame.
+
+\begin{defn}
+	A frame $\{f_i\}$ with frame constants such that $A = B$ is called a tight frame. A tight frame where $A = B = 1$ is called a Parseval frame.
+\end{defn}
+
+\begin{question}
+Are there Parseval Frames which are not orthonormal bases?
+\end{question}
+\end{document}
